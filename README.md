@@ -1,0 +1,8 @@
+election algorithm on graph
+===========
+ 
+ 
+
+
+
+ 
