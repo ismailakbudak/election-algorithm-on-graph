@@ -65,9 +65,8 @@ class Graph(object):
            
     #TODO
     def grow(self, GOWTH_RATE=10, GROWTH_LIMIT=1000, MAX_CAPACITY=400 ):
-        
         length = len(self.nodes)
-        while length <= GROWTH_LIMIT:
+        while length < GROWTH_LIMIT:
             number = random.randint(1,100)
             if number > GOWTH_RATE:
                 #add new node
@@ -89,15 +88,29 @@ class Graph(object):
                 #remove node
                 if len(self.nodes) > 0: 
                     random_node = random.choice(self.nodes.values())
-                    self.log_method("remove node")          
+                    self.log_method("remove node")
+        
+        self.log_method("total nodes length : %s"%str(len(self.nodes))  )
+    
     #TODO
+    def deleteRandom():
+        pass   
+
+    # Add neighbours to new random node 
     def linkRandom(self, node, random_node):
+        self.log_method("")
+        self.log_method("Start =======================================================")
+        self.log_method("Started Node : %s neighbors : %s "%(node, str(node.neighbors)) ) 
+        self.log_method("Started Random Node: %s neighbors : %s "%(random_node, str(random_node.neighbors)) )
         if not(random_node):
             self.log_method("ERROR: random_node is empty in linkRandom method")
             return
         if self.link(node,random_node):
             neighbors = self.getAvailableNeighbours(node, random_node)
             length = len(neighbors)
+            self.log_method("AVAILABLE : %s  "%(str(neighbors)) ) 
+            self.log_method("total node length is %s"%( str(len(self.nodes)) ) )    
+            self.log_method("random_node neighbours length is %s"%( str(length) ) )            
             if length >= 2:
                 # Get random node neighbours with randomly
                 node_neighbor1 = random.choice(neighbors)
@@ -112,8 +125,6 @@ class Graph(object):
                 node_neighbor1 = self.getRandomNode( node )
                 node_neighbor2 = self.getRandomNode( node, [node_neighbor1] )
             
-            self.log_method("")    
-            self.log_method("random node length is %s"%( str(length) ) )
             if node_neighbor1:
                 if self.link(node,node_neighbor1):
                     self.log_method("nodes connected to random node  ")
@@ -130,19 +141,19 @@ class Graph(object):
                 self.log_method("ERROR-4: node is None")
         else:
             self.log_method("ERROR: node could not linked to random_node")
-            self.remove(node)
+            self.remove(node) 
+        self.log_method("END =======================================================")
         self.log_method("") 
-          
+
     # remove common neighbours from random neighbours    
     def getAvailableNeighbours(self, node, random_node): 
         neighbors = random_node.neighbors.values()    
-        forbidden_values = node.neighbors.values()
-        forbidden_values.append(node)
-        forbidden_values.append(random_node)
-        self.log_method("forbidden values are %s"%(str(forbidden_values)))
+        forbidden_values = node.neighbors.values() # this code is geting random_node
+        forbidden_values.append(node) 
+        self.log_method("Available1 -- forbidden values are %s"%(str(forbidden_values))) 
         for value in forbidden_values:
             if value in neighbors:
-                neighbors.remove(value)
+                neighbors.remove(value) 
         return neighbors 
 
     def getRandomNode(self, node, nodes=[]): 
@@ -150,22 +161,21 @@ class Graph(object):
         forbidden_values.append(node)
         for item in nodes:
             forbidden_values.append(item) 
-        self.log_method("forbidden values are %s"%(str(forbidden_values)))
         total_values = self.nodes.values()
+        self.log_method("First -- forbidden values are %s"%(str(forbidden_values)))
+        self.log_method("First Available -- nodes are %s"%(str(total_values)))
         for value in forbidden_values:
             if value in total_values:
                 total_values.remove(value)
-        self.log_method("forbidden values are %s"%(str(forbidden_values)))
+        self.log_method("Second -- forbidden values are %s"%(str(forbidden_values)))
+        self.log_method("Second Available -- nodes are %s"%(str(total_values)))
         if len(total_values) > 0:
             new_random_node = random.choice(total_values)
+            self.log_method("AVAILABLE : %s  "%(str(new_random_node)) ) 
             return new_random_node    
         else:
             self.log_method("ERROR-0: there is no node for neighbour")
-            return None    
-
-    #TODO
-    def deleteRandom():
-        pass    
+            return None     
 
     def add(self, node):
         if not(self.nodes.has_key(node.ID)):
@@ -202,20 +212,29 @@ class Graph(object):
             for node_neighbor in node.neighbors.values():
                 graph.add_edge(node, node_neighbor)
         subgraphs = list(nx.strongly_connected_components(graph))
-        colors = ["lightblue","lightyellow",  "skyblue", "mistyrose", "aliceblue"]
+        colors = ["skyblue","lightyellow",  "skyblue", "orange", "aliceblue"]
         def find_color(node): 
             for subgraph in subgraphs:
-                if node in subgraph:
-                    return colors[subgraphs.index(subgraph)]
-            return "ghostwhite"
+                if node in subgraph: 
+                    if  node.CAPACITY > 300:
+                        return colors[3]
+                    elif  node.CAPACITY > 200:
+                        return colors[2]
+                    elif  node.CAPACITY > 100:
+                        return colors[1]
+                    else:    
+                        return colors[subgraphs.index(subgraph)]
+            return "lightyellow"
         node_colors = map(find_color, graph.nodes())
         plt.figure(figsize=(10, 10))
         nx.draw(graph,
                 with_labels=True,
-                font_size=8,
-                node_size=1000,
+                font_size=7,
+                node_size=1300,
                 font_family='ubuntu',
+                font_color='red',
                 node_color=node_colors,
+                edge_color='orange',
                 width=0.3)
         plt.show(block=False)
 

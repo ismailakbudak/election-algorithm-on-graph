@@ -61,7 +61,7 @@ g.readFiles()
 log_neighbours(g)
 #g.draw()
 
-g.grow( 10, 20 )
+g.grow( 10, 100 )
 
 g.draw()
 
