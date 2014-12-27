@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'untitled.ui'
-#
-# Created: Fri Nov 28 01:22:09 2014
-#      by: PyQt4 UI code generator 4.10.4
+# -*- coding: utf-8 -*-  
 # 
 # Developer
 # Ismail AKBUDAK
@@ -60,17 +55,11 @@ class Ui_MainWindow( ):
         self.pushButtonGrow.setGeometry(QtCore.QRect(85, 50, 200, 30)) 
         self.pushButtonGrow.setObjectName(_fromUtf8("pushButtonGrow"))
         self.pushButtonGrow.setText(_translate("MainWindow", "Start Growing", None))
-        #self.pushButtonDraw.clicked.connect(self.grow)
-        # Main - Stop Growing button
-        self.pushButtonStop = QtGui.QPushButton(self.tabMain)
-        self.pushButtonStop.setGeometry(QtCore.QRect(85, 90, 200, 30)) 
-        self.pushButtonStop.setObjectName(_fromUtf8("pushButtonStop"))
-        self.pushButtonStop.setText(_translate("MainWindow", "Stop Growing", None))
-        #self.pushButtonDraw.clicked.connect(self.grow)
+        #self.pushButtonDraw.clicked.connect(self.grow) 
 
         # Main - Draw Graph  button
         self.pushButtonDraw = QtGui.QPushButton(self.tabMain)
-        self.pushButtonDraw.setGeometry(QtCore.QRect(85, 130, 200, 30)) 
+        self.pushButtonDraw.setGeometry(QtCore.QRect(85, 90, 200, 30)) 
         self.pushButtonDraw.setObjectName(_fromUtf8("pushButtonDraw"))
         self.pushButtonDraw.setText(_translate("MainWindow", "Draw Graph", None))
         #self.pushButtonDraw.clicked.connect(self.grow)
@@ -94,6 +83,34 @@ class Ui_MainWindow( ):
         self.pushButtonStartElection.setText(_translate("MainWindow", "Start Election Algorithm", None))
         #self.pushButtonStartElection.clicked.connect(self.grow)
 
+        # # Main - List view messages
+        # self.listViewMessages = QtGui.QListWidget(self.tabMain)
+        # self.listViewMessages.setGeometry(QtCore.QRect(30, 60, 731, 231))
+        # self.listViewMessages.setEditTriggers(QtGui.QAbstractItemView.CurrentChanged|QtGui.QAbstractItemView.DoubleClicked|QtGui.QAbstractItemView.SelectedClicked)
+        # self.listViewMessages.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
+        # self.listViewMessages.setObjectName(_fromUtf8("listViewMessages"))
+        # # Main - Message
+        # self.textEditMessage = QtGui.QLineEdit(self.tabMain)
+        # self.textEditMessage.setGeometry(QtCore.QRect(30, 350, 541, 30))
+        # self.textEditMessage.setObjectName(_fromUtf8("textEditMessage")) 
+        # # Main - program status
+        # self.labelStatusMain = QtGui.QLabel(self.tabMain)
+        # self.labelStatusMain.setGeometry(QtCore.QRect(40, 460, 721, 30))
+        # self.labelStatusMain.setFont(font)
+        # self.labelStatusMain.setObjectName(_fromUtf8("labelStatusMain"))
+        # self.labelStatusMain.setText(_translate("MainWindow", "Program status....", None))
+        # # Main - messages label title
+        # self.labelTitleList = QtGui.QLabel(self.tabMain)
+        # self.labelTitleList.setGeometry(QtCore.QRect(30, 10, 731, 45))
+        # self.labelTitleList.setFont(fontBig)
+        # self.labelTitleList.setObjectName(_fromUtf8("labelTitleList"))
+        # self.labelTitleList.setText(_translate("MainWindow", "Nodes info will be here  :", None))
+        # # Main - message label title
+        # self.labelTitleList_2 = QtGui.QLabel(self.tabMain)
+        # self.labelTitleList_2.setGeometry(QtCore.QRect(30, 300, 511, 45))
+        # self.labelTitleList_2.setFont(fontBig)
+        # self.labelTitleList_2.setObjectName(_fromUtf8("labelTitleList_2"))
+        # self.labelTitleList_2.setText(_translate("MainWindow", "Info :", None))
         # Tab settings initialized
         self.tabSettings = QtGui.QWidget()
         self.tabSettings.setObjectName(_fromUtf8("tabSettings"))   
