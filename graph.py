@@ -66,6 +66,7 @@ class Graph(object):
     #TODO
     def grow(self, GOWTH_RATE=10, GROWTH_LIMIT=1000, MAX_CAPACITY=400 ):
         length = len(self.nodes)
+        figure = 1
         while length < GROWTH_LIMIT:
             number = random.randint(1,100)
             if number > GOWTH_RATE:
@@ -88,13 +89,67 @@ class Graph(object):
                 #remove node
                 if len(self.nodes) > 0: 
                     random_node = random.choice(self.nodes.values())
+                    self.deleteRandom(random_node)
+                    self.remove(random_node)
                     self.log_method("remove node")
-        
+                    length -= 1
+            self.log_method("figure : %s"%figure)
+            figure += 1        
+            self.draw()
         self.log_method("total nodes length : %s"%str(len(self.nodes))  )
     
     #TODO
-    def deleteRandom():
-        pass   
+    def deleteRandom(self,random_node):
+        self.log_method("")
+        self.log_method("DELETE Start +++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        self.log_method("Started Random Node: %s neighbors : %s "%(random_node, str(random_node.neighbors)) )
+        if not(random_node):
+            self.log_method("ERROR: random_node is empty in deleteRandom method")
+            return
+        if len(random_node.neighbors) > 0:
+            for item in random_node.neighbors.values():
+                #item.neighbours.pop(random_node.ID)
+                length = len(item.neighbors) - 1
+                self.log_method("")
+                self.log_method("=============================================================")
+                self.log_method("neighbours length is %s"%( str(length) ))
+                self.log_method("neighbours Node: %s neighbors : %s "%(item, str(item.neighbors)) )
+                if length < 3:
+                    node_neighbor = self.getRandomNode2( item )
+                    if node_neighbor:
+                        if self.link(item,node_neighbor):
+                            self.log_method("nodes connected to node  ")
+                        else:
+                            self.log_method("ERROR-1: nodes could not connected to node  ")    
+                    else:
+                        self.log_method("ERROR-2: node is None")
+                self.log_method("=============================================================")
+        else:
+            self.log_method("ERROR-0: random_node neighbours is empty in deleteRandom method")
+        self.log_method("DELETE END +++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        self.log_method("") 
+
+    # Get random node for delete process    
+    def getRandomNode2(self, node, nodes=[]): 
+        forbidden_values = node.neighbors.values()
+        forbidden_values.append(node)
+        for item in nodes:
+            forbidden_values.append(item) 
+        total_values = self.nodes.values()
+        self.log_method("First -- forbidden values are %s"%(str(forbidden_values)))
+        self.log_method("First AVAILABLE -- nodes are %s"%(str(total_values)))
+        for value in forbidden_values:
+            if value in total_values:
+                total_values.remove(value)
+        self.log_method("Second -- forbidden values are %s"%(str(forbidden_values)))
+        self.log_method("Second AVAILABLE -- nodes are %s"%(str(total_values)))
+        if len(total_values) > 0:
+            new_random_node = random.choice(total_values)
+            self.log_method("LAST AVAILABLE : %s  "%(str(new_random_node)) ) 
+            return new_random_node    
+        else:
+            self.log_method("ERROR-0: there is no node for neighbour")
+            return None 
 
     # Add neighbours to new random node 
     def linkRandom(self, node, random_node):
@@ -150,7 +205,7 @@ class Graph(object):
         neighbors = random_node.neighbors.values()    
         forbidden_values = node.neighbors.values() # this code is geting random_node
         forbidden_values.append(node) 
-        self.log_method("Available1 -- forbidden values are %s"%(str(forbidden_values))) 
+        self.log_method("AVAILABLE -- forbidden values are %s"%(str(forbidden_values))) 
         for value in forbidden_values:
             if value in neighbors:
                 neighbors.remove(value) 
@@ -163,15 +218,15 @@ class Graph(object):
             forbidden_values.append(item) 
         total_values = self.nodes.values()
         self.log_method("First -- forbidden values are %s"%(str(forbidden_values)))
-        self.log_method("First Available -- nodes are %s"%(str(total_values)))
+        self.log_method("First AVAILABLE -- nodes are %s"%(str(total_values)))
         for value in forbidden_values:
             if value in total_values:
                 total_values.remove(value)
         self.log_method("Second -- forbidden values are %s"%(str(forbidden_values)))
-        self.log_method("Second Available -- nodes are %s"%(str(total_values)))
+        self.log_method("Second AVAILABLE -- nodes are %s"%(str(total_values)))
         if len(total_values) > 0:
             new_random_node = random.choice(total_values)
-            self.log_method("AVAILABLE : %s  "%(str(new_random_node)) ) 
+            self.log_method("LAST AVAILABLE : %s  "%(str(new_random_node)) ) 
             return new_random_node    
         else:
             self.log_method("ERROR-0: there is no node for neighbour")

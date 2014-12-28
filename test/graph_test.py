@@ -61,9 +61,9 @@ g.readFiles()
 log_neighbours(g)
 #g.draw()
 
-g.grow( 10, 100 )
+g.grow( 10, 10 )
 
-g.draw()
+#g.draw()
 
 if len(n2.neighbors) == 4 and len(n3.neighbors) == 2 and len(n4.neighbors) == 2 :
     log("completed successfully..")
