@@ -95,7 +95,7 @@ class Graph(object):
                     length -= 1
             self.log_method("figure : %s"%figure)
             figure += 1        
-            self.draw()
+            #self.draw()
         self.log_method("total nodes length : %s"%str(len(self.nodes))  )
     
     #TODO
@@ -156,10 +156,10 @@ class Graph(object):
         self.log_method("")
         self.log_method("Start =======================================================")
         self.log_method("Started Node : %s neighbors : %s "%(node, str(node.neighbors)) ) 
-        self.log_method("Started Random Node: %s neighbors : %s "%(random_node, str(random_node.neighbors)) )
         if not(random_node):
             self.log_method("ERROR: random_node is empty in linkRandom method")
             return
+        self.log_method("Started Random Node: %s neighbors : %s "%(random_node, str(random_node.neighbors)) )
         if self.link(node,random_node):
             neighbors = self.getAvailableNeighbours(node, random_node)
             length = len(neighbors)
@@ -260,38 +260,45 @@ class Graph(object):
         else:
             return False     
     
-    def draw(self):
+    def draw(self, MAX_CAPACITY=400):
+        colors = ["#EFDFBB","orange","lightgreen","lightblue","#FFD300","violet","yellow","#7CB9E8","#E1A95F","skyblue","#007FFF","#CCFF00","pink","cyan"]
+        length = len(colors) - 1
+        amount = MAX_CAPACITY / length
+        def find_color(node):
+            index = node.CAPACITY/amount
+            if index > length:
+                index = length 
+            return colors[index]
+
         graph = nx.DiGraph()
         for node in self.nodes.values():
             graph.add_node(node)
             for node_neighbor in node.neighbors.values():
-                graph.add_edge(node, node_neighbor)
-        subgraphs = list(nx.strongly_connected_components(graph))
-        colors = ["skyblue","lightyellow",  "skyblue", "orange", "aliceblue"]
-        def find_color(node): 
-            for subgraph in subgraphs:
-                if node in subgraph: 
-                    if  node.CAPACITY > 300:
-                        return colors[3]
-                    elif  node.CAPACITY > 200:
-                        return colors[2]
-                    elif  node.CAPACITY > 100:
-                        return colors[1]
-                    else:    
-                        return colors[subgraphs.index(subgraph)]
-            return "lightyellow"
-        node_colors = map(find_color, graph.nodes())
-        plt.figure(figsize=(10, 10))
+                graph.add_edge(node, node_neighbor, color=find_color(node_neighbor) )
+        node_colors = map(find_color, graph.nodes()) 
+        edges,edge_colors = zip(*nx.get_edge_attributes(graph,'color').items()) 
+
+        plt.figure(figsize=(20, 20))
         nx.draw(graph,
                 with_labels=True,
                 font_size=7,
                 node_size=1300,
                 font_family='ubuntu',
                 font_color='red',
-                node_color=node_colors,
-                edge_color='orange',
-                width=0.3)
-        plt.show(block=False)
+                node_color=node_colors, 
+                edgelist=edges,
+                edge_color=edge_colors, 
+                width=0.4)
+        
+        y=1.13;i=1 
+        for color in colors:
+            if i <= length:
+                text =  "%s <= CAPACITY < %s"%(str((i-1) * amount), str(i * amount))
+            else: 
+                text =  "%s <= CAPACITY  "%(str((i-1) * amount) )
+            plt.text(-0.18, y, text, bbox=dict(facecolor=color, alpha=0.5))
+            y-=0.03; i+=1
+        plt.show(block=False) 
 
     def readFiles(self):
         #nodes.txt => node_id capacity
