@@ -15,6 +15,7 @@ class Node(object):
     def __init__(self, ID, CAPACITY):
         self.ID = ID
         self.CAPACITY = CAPACITY
+        self.VISITED = False
         self.NAME = 'N:%s-C:%s'%(str(ID),str(CAPACITY))
         self.log("node initialized..")
         self.neighbors={}
@@ -260,9 +261,64 @@ class Graph(object):
         else:
             return False     
     
+    def startElection(self,start):
+        graph = self.nodes
+        visited = {}
+        visited_index = {} 
+        queue = [start] 
+        while queue:
+            vertex = queue.pop(0)  
+            visited[vertex] = []
+            visited_index[vertex.ID] = []
+            vertex.VISITED = True 
+            for node in  vertex.neighbors.values(): 
+                if not(node.VISITED):
+                    visited[vertex].append(node)
+                    visited_index[vertex.ID].append(node.ID)
+                    queue.append( node )  
+                    node.VISITED = True
+        
+        print visited_index
+        print "============================="
+        val = self.findMax(visited,start, start)
+        print "============================="
+        print val
+
+        # Write method   
+    def findMaxArray(self,visited,start,max=None): 
+        if len(visited[start]) == 0:
+            if max[0].CAPACITY > start.CAPACITY:
+                return max
+            elif max[0].CAPACITY == start.CAPACITY:
+                if start not in max:
+                    max.append(start)        
+            else:    
+                return [start] 
+        for node in visited[start]:
+            val = self.findMaxArray(visited,node, max)
+            if max[0].CAPACITY < val[0].CAPACITY:
+                max = val         
+                          
+        return max   
+
+    def findMax(self,visited,start,max=None): 
+        if len(visited[start]) == 0:
+            if max.CAPACITY > start.CAPACITY:
+                return max
+            else:    
+                return start 
+        for node in visited[start]:
+            val = self.findMax(visited,node, max)
+            if max.CAPACITY < val.CAPACITY:
+                max = val          
+        return max     
+
     def draw(self, MAX_CAPACITY=400):
         colors = ["#EFDFBB","orange","lightgreen","lightblue","#FFD300","violet","yellow","#7CB9E8","#E1A95F","skyblue","#007FFF","#CCFF00","pink","cyan"]
         length = len(colors) - 1
+        # division by zero
+        if length >= MAX_CAPACITY:
+            length = MAX_CAPACITY
         amount = MAX_CAPACITY / length
         def find_color(node):
             index = node.CAPACITY/amount
@@ -278,7 +334,7 @@ class Graph(object):
         node_colors = map(find_color, graph.nodes()) 
         edges,edge_colors = zip(*nx.get_edge_attributes(graph,'color').items()) 
 
-        plt.figure(figsize=(20, 20))
+        plt.figure(figsize=(15, 15))
         nx.draw(graph,
                 with_labels=True,
                 font_size=7,
@@ -290,13 +346,16 @@ class Graph(object):
                 edge_color=edge_colors, 
                 width=0.4)
         
-        y=1.13;i=1 
+        y=1.13;i=1; flag=False 
         for color in colors:
             if i <= length:
                 text =  "%s <= CAPACITY < %s"%(str((i-1) * amount), str(i * amount))
             else: 
                 text =  "%s <= CAPACITY  "%(str((i-1) * amount) )
+                flag=True
             plt.text(-0.18, y, text, bbox=dict(facecolor=color, alpha=0.5))
+            if flag:
+                break
             y-=0.03; i+=1
         plt.show(block=False) 
 
@@ -338,4 +397,8 @@ class Graph(object):
         pass
         
     def log_method(self, message):
-        print("GRAPH:: %s"%(message) )         
+        #print("GRAPH:: %s"%(message) )
+        pass
+
+    def log_election(self, message):
+        print("GRAPH:: %s"%(message) )                
