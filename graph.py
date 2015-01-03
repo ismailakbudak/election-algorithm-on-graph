@@ -19,7 +19,7 @@ class Node(object):
         self.CAPACITY = CAPACITY
         self.VISITED = False
         self.NAME = 'N:%s-C:%s'%(str(ID),str(CAPACITY))
-        self.COORDINATOR = self 
+        self.COORDINATOR = self
         self.neighbours={}
         self.log("node initialized..")
     
@@ -96,7 +96,12 @@ class Graph(object):
         self.lastID=0
         self.traceGrowth=True
         self.traceElection=True
-        self.traceLog=True  
+        self.traceLog=True
+        self.traceGrowthVisual=False
+        self.traceElectionVisual=True
+        self.MAX_CAPACITY=400
+        self.number = 0
+        self.log("Graph initialized..")  
            
     """ 
     Graph grow method
@@ -108,6 +113,7 @@ class Graph(object):
         None 
     """   
     def grow(self, GOWTH_RATE=10, GROWTH_LIMIT=1000, MAX_CAPACITY=400 ):
+        self.MAX_CAPACITY = MAX_CAPACITY
         length = len(self.nodes)
         figure = 1
         while length < GROWTH_LIMIT:
@@ -136,10 +142,10 @@ class Graph(object):
                     self.remove(random_node)
                     self.log_grow("node has been removed")
                     length -= 1
-            if self.traceGrowth:
+            if self.traceGrowthVisual and length > 1:
                 self.log_grow("figure : %s"%figure)
                 figure += 1        
-                self.draw(MAX_CAPACITY)
+                self.draw()
         self.log_grow("total nodes length : %s"%str(len(self.nodes))  )
     
     """ 
@@ -180,29 +186,6 @@ class Graph(object):
         self.log_grow("DELETE END +++++++++++++++++++++++++++++++++++++++++++++++++++++")
         self.log_grow("") 
  
-    # Get random node for delete process
-    # Not using    
-    def getRandomNode2(self, node, nodes=[]): 
-        forbidden_values = node.neighbours.values()
-        forbidden_values.append(node)
-        for item in nodes:
-            forbidden_values.append(item) 
-        total_values = self.nodes.values()
-        self.log_grow("First -- forbidden values are %s"%(str(forbidden_values)))
-        self.log_grow("First AVAILABLE -- nodes are %s"%(str(total_values)))
-        for value in forbidden_values:
-            if value in total_values:
-                total_values.remove(value)
-        self.log_grow("Second -- forbidden values are %s"%(str(forbidden_values)))
-        self.log_grow("Second AVAILABLE -- nodes are %s"%(str(total_values)))
-        if len(total_values) > 0:
-            new_random_node = random.choice(total_values)
-            self.log_grow("LAST AVAILABLE : %s  "%(str(new_random_node)) ) 
-            return new_random_node    
-        else:
-            self.log_grow("ERROR-0: there is no node for neighbour")
-            return None 
-
     """ 
     Add new node to random node and connect with its neighbours
     Args: 
@@ -322,6 +305,7 @@ class Graph(object):
             self.log("node could not added..")
             self.log("ERROR: key '%s' is exist"%(node.ID) )
             return False
+    
     """ 
     Remove node from graph
     Args: 
@@ -388,18 +372,44 @@ class Graph(object):
                     queue.append( node )  
                     node.VISITED = True
 
-        pp.pprint(visited_index) 
-        self.log_election("=============================")
-        val = self.findMaxArray(visited,start, [start])
-        self.log_election("=============================")
-        self.log_election("=============================")
-        
-        val2 = self.findMax(visited,start, start)
-        self.log_election("=============================")
-        self.log_election( str(val) )
-        self.log_election("=============================")
-        self.log_election( str(val2) )
+        self.log_pp( "Graph visit path", visited_index,  self.traceElection  ) 
 
+        coordinator_candidates = self.findMaxArray(visited, start, [start])
+        
+        coordinator = self.findMax(visited, start, start)
+        self.log_election("====================================")
+        self.log_election("One coordinator result: " + str(coordinator) )
+        self.log_election("====================================")
+        
+        coordinator = random.choice(coordinator_candidates)
+        if self.traceElectionVisual:
+            self.draw()
+            self.draw_node(coordinator, coordinator_candidates)
+        self.log_election("====================================")
+        self.log_election("Election result : " + str(coordinator_candidates) )
+        self.log_election("====================================")
+        self.log_election("Coordinator : " + str(coordinator) )
+        self.log_election("====================================")
+        self.log_election("First status for nodes coordinator")
+        self.log_election("====================================")
+        self.print_coordinator()
+        self.informCoordinator(visited, start, coordinator)
+        self.log_election("====================================")
+        self.log_election("After inform coordinator to nodes ")
+        self.log_election("====================================")
+        self.print_coordinator()   
+    
+    """ 
+    Print nodes coordinator
+    Args:
+        None  
+    Return: 
+        None
+    """      
+    def print_coordinator(self):
+        for node in self.nodes.values():
+            self.log_election(" %s -> %s " % (str(node), str(node.COORDINATOR)) )    
+        
     """ 
     Find nodes that has maximum capacity
     Args: 
@@ -409,12 +419,7 @@ class Graph(object):
     Return: 
         Node objects array
     """        
-    def findMaxArray(self,visited,start,max=None): 
-        self.log_election("1 info -----------------------")
-        self.log_election( "1 start ID : %s " % (str(start.ID)) )
-        for n in max:
-            self.log_election( "1 maxs ID : %s " % (str(n.ID)) )
-        self.log_election("1 end -----------------------") 
+    def findMaxArray(self,visited,start,max=None):   
         if len(visited[start]) == 0:
             if max[0].CAPACITY > start.CAPACITY:
                 return max
@@ -430,13 +435,7 @@ class Graph(object):
             if start not in max:
                 max.append(start) 
         for node in visited[start]:
-            val = self.findMaxArray(visited,node, max)
-            self.log_election("2 info -----------------------")
-            for n in val:
-                self.log_election( "2 vals ID : %s " % (str(n.ID)) ) 
-            for n in max:
-                self.log_election( "2 maxs ID : %s " % (str(n.ID)) )
-            self.log_election("2 end -----------------------")
+            val = self.findMaxArray(visited,node, max) 
             if max[0].CAPACITY < val[0].CAPACITY:
                 max = val         
             elif max[0].CAPACITY == val[0].CAPACITY:
@@ -454,12 +453,7 @@ class Graph(object):
     Return: 
         Node object
     """    
-    def findMax(self,visited,start,max=None): 
-        self.log_election("1 info -----------------------")
-        self.log_election( "1 start ID : %s " % (str(start.ID)) )
-        self.log_election( "1 max ID : %s " % (str(max.ID)) )
-        self.log_election("1 end -----------------------") 
-
+    def findMax(self,visited,start,max=None):  
         if len(visited[start]) == 0:
             if max.CAPACITY > start.CAPACITY:
                 return max
@@ -468,19 +462,13 @@ class Graph(object):
                 return random.choice(vals)        
             else:    
                 return start
-
         if max.CAPACITY < start.CAPACITY:
             max = start         
         elif max.CAPACITY == start.CAPACITY:
             vals = [max,start]
             max = random.choice(vals)  
-
         for node in visited[start]:
-            val = self.findMax(visited,node, max)
-            self.log_election("2 info -----------------------")
-            self.log_election( "2 val ID : %s " % (str(val.ID)) ) 
-            self.log_election( "2 max ID : %s " % (str(max.ID)) )
-            self.log_election("2 end -----------------------")
+            val = self.findMax(visited,node, max) 
             if max.CAPACITY < val.CAPACITY:
                 max = val         
             elif max.CAPACITY == val.CAPACITY:
@@ -489,19 +477,40 @@ class Graph(object):
         return max
 
     """ 
+    Inform  coordinator to all nodes 
+    Args: 
+        visited: graph find path
+        start: start point node object 
+        coordinator:  node that is new coordinator
+    Return: 
+        Node object
+    """
+    def informCoordinator(self, visited, start, coordinator):
+        #self.log_election( str(self.number) + " nodes coordinator")
+        #self.number += 1
+        #self.print_coordinator()
+        if len(visited[start]) == 0:
+            start.COORDINATOR = coordinator
+            return True
+        start.COORDINATOR = coordinator  
+        for node in visited[start]:
+            self.informCoordinator(visited,node, coordinator) 
+        return True
+
+    """ 
     Draw all nodes with CAPACITY property
     Args: 
         MAX_CAPACITY: max capacity for color index
     Return: 
         None
     """
-    def draw(self, MAX_CAPACITY=400):
+    def draw(self ):
         colors = ["#EFDFBB","orange","lightgreen","lightblue","#FFD300","violet","yellow","#7CB9E8","#E1A95F", "#007FFF","#CCFF00","pink","cyan"]
         length = len(colors) - 1
         # division by zero
-        if length >= MAX_CAPACITY:
-            length = MAX_CAPACITY
-        amount = MAX_CAPACITY / length
+        if length >= self.MAX_CAPACITY:
+            length = self.MAX_CAPACITY
+        amount = self.MAX_CAPACITY / length
         def find_color(node):
             index = node.CAPACITY/amount
             if index > length:
@@ -538,9 +547,59 @@ class Graph(object):
             plt.text(-0.18, y, text, bbox=dict(facecolor=color, alpha=0.5))
             if flag:
                 break
-            y-=0.03; i+=1
+            y-=0.033; i+=1
         plt.show(block=False) 
 
+
+    """ 
+    Draw coordinator and coordinator candidates
+    Args: 
+        coordinator: coordinator node
+        coordinator_candidates: node objects array
+    Return: 
+        None
+    """
+    def draw_node(self, coordinator, coordinator_candidates):
+        coordinator_colors = ["orange", "yellow", "skyblue"]  
+        def find_coordinator_color(node):
+            if node.ID == coordinator.ID:
+                return coordinator_colors[0]
+            if node in coordinator_candidates:
+                return coordinator_colors[1]
+            return coordinator_colors[2] 
+
+        graph = nx.DiGraph()
+        for node in self.nodes.values():
+            graph.add_node(node)
+            for node_neighbour in node.neighbours.values():
+                graph.add_edge( node, 
+                                node_neighbour,  
+                                coordinator_color=find_coordinator_color(node_neighbour) )
+        node_coordinator_colors = map(find_coordinator_color, graph.nodes()) 
+        coordinator_edges,coordinator_edge_colors = zip(*nx.get_edge_attributes(graph,'coordinator_color').items()) 
+        plt.figure(figsize=(10, 10))
+        nx.draw(graph,
+                with_labels=True,
+                font_size=7,
+                node_size=1300,
+                font_family='ubuntu',
+                font_color='red',
+                node_color=node_coordinator_colors, 
+                edgelist=coordinator_edges,
+                edge_color=coordinator_edge_colors, 
+                width=0.4)
+        
+        y=1.13; flag=False 
+        for color in coordinator_colors:
+            if color == coordinator_colors[0]:
+                text = "Coordinator"
+            elif color == coordinator_colors[1]: 
+                text = "Coordinator candidate"
+            else:  
+                text = "Normal nodes" 
+            plt.text(-0.18, y, text, bbox=dict(facecolor=color, alpha=0.5))
+            y-=0.033 
+        plt.show(block=False) 
 
     """ 
     Read nodes and edges from file 
@@ -584,8 +643,13 @@ class Graph(object):
 
     def log(self, message):
         if self.traceLog:  
-            print("GRAPH:: %s"%(message) )   
-        
+            print("GRAPH:: %s"%(message) )
+
+    def log_pp(self, message, array, is_write ):
+        if is_write:
+             print("GRAPH:: %s"%(message) )
+             pp.pprint(array) 
+
     def log_grow(self, message):
         if self.traceGrowth:  
             print("GRAPH GROW:: %s"%(message) )

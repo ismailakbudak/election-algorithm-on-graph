@@ -6,7 +6,8 @@
 # Election algorithm on graph
   
 from PyQt4 import QtCore, QtGui
- 
+from graph import *
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -21,10 +22,10 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 # Application UI
-class Ui_MainWindow( ):
+class Ui_MainWindow():
      
     def __init__(self):
-        pass
+        self.graph = Graph()  
 
     def setupUi(self, MainWindow): 
         MainWindow.setObjectName(_fromUtf8("MainWindow"))

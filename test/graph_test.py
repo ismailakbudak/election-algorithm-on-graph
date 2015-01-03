@@ -13,7 +13,7 @@ sys.path.insert(0, parentdir)
 from graph import *
 
 def log(message):
-    #print("TEST:: %s"%(message))
+    print("TEST:: %s"%(message))
     pass
 
 def log_neighbours(graph):
@@ -54,25 +54,14 @@ g.link(n1,n4)
 g.link(n1,n5) 
 g.link(n1,n6) 
 
-log_neighbours(g) 
-#g.removeAll()
+log_neighbours(g)  
 
 log_neighbours(g)
 
-g.readFiles()
+g.readFiles() 
 
-log_neighbours(g)
-#g.draw()
-g.traceGrowth = False
-g.grow( 10, 10, 10 )
-g.draw(10)
-node = random.choice(g.nodes.values())
-array = g.startElection(node)
-
-#print array
-#if len(n2.neighbours) == 4 and len(n3.neighbours) == 2 and len(n4.neighbours) == 2 :
-#    log("completed successfully..")
-#else:
-#    log("There is something wrong..")
-
-input("TEST:: sonlandırmak için enter a basınız..") 
+if len(n2.neighbours) == 4 and len(n3.neighbours) == 2 and len(n4.neighbours) == 2 :
+    log("completed successfully..")
+else:
+    log("There is something wrong..")
+ 
