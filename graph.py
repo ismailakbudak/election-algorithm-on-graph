@@ -522,9 +522,13 @@ class Graph(object):
             graph.add_node(node)
             for node_neighbour in node.neighbours.values():
                 graph.add_edge(node, node_neighbour, color=find_color(node_neighbour) )
-        node_colors = map(find_color, graph.nodes()) 
-        edges,edge_colors = zip(*nx.get_edge_attributes(graph,'color').items()) 
+        node_colors = map(find_color, graph.nodes())
 
+        if len(self.nodes) > 1:
+            edges,edge_colors = zip(*nx.get_edge_attributes(graph,'color').items()) 
+        else:
+            edges=[]
+            edge_colors="yellow"    
         plt.figure(figsize=(10, 10))
         nx.draw(graph,
                 with_labels=True,
@@ -616,26 +620,28 @@ class Graph(object):
             lines = f.readlines()
             for line in lines:
                 content = line.strip().split()
-                ID = int(content[0])
-                CAPACITY = int(content[1])
-                node=Node(ID, CAPACITY)
-                self.add(node)  
+                if len(content) == 2:
+                    ID = int(content[0])
+                    CAPACITY = int(content[1])
+                    node=Node(ID, CAPACITY)
+                    self.add(node)  
 
             f = open('edges.txt','r')
             lines = f.readlines()
             for line in lines:
                 content = line.strip().split()
-                id1 = int(content[0])
-                id2 = int(content[1])
-                if self.nodes.has_key(id1) and self.nodes.has_key(id2):
-                    node1 = self.nodes[ id1 ]
-                    node2 = self.nodes[ id2 ]
-                    self.link( node1, node2 )
-                else:
-                    if not(self.nodes.has_key(id1)):
-                        self.log("ERROR: key '%s' is not exist"%(id1) )
-                    if not(self.nodes.has_key(id2)):
-                        self.log("ERROR: key '%s' is not exist"%(id2) )
+                if len(content) == 2:
+                    id1 = int(content[0])
+                    id2 = int(content[1])
+                    if self.nodes.has_key(id1) and self.nodes.has_key(id2):
+                        node1 = self.nodes[ id1 ]
+                        node2 = self.nodes[ id2 ]
+                        self.link( node1, node2 )
+                    else:
+                        if not(self.nodes.has_key(id1)):
+                            self.log("ERROR: key '%s' is not exist"%(id1) )
+                        if not(self.nodes.has_key(id2)):
+                            self.log("ERROR: key '%s' is not exist"%(id2) )
             self.log('Files readed successfully..')
         except Exception, error:
             self.log('Files could not read..')

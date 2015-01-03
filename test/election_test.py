@@ -14,18 +14,25 @@ from graph import *
 
 def log(message):
     print("TEST:: %s"%(message))
-    pass
+
+def log_neighbours(graph):
+    for node in graph.nodes.values():
+        log("%s neighbours : %s "%(node, str(node.neighbours)) ) 
+    if len(graph.nodes) == 0 :
+        log("there are not any node")
 
 g=Graph()  
-
-g.traceGrowth = True
+g.traceGrowth = False
 g.traceLog = True
 g.traceElection = True
 g.traceElectionVisual = True
 
 g.readFiles()
-g.grow( 10, 10, 9 )
- 
+
+#log_neighbours(g) 
+
+g.grow( 10, 20, 9 )
+
 node = random.choice(g.nodes.values())
 g.startElection(node)
  
