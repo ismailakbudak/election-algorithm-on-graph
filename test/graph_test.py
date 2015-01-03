@@ -18,7 +18,7 @@ def log(message):
 
 def log_neighbours(graph):
     for node in graph.nodes.values():
-        log("%s neighbors : %s "%(node, str(node.neighbors)) ) 
+        log("%s neighbours : %s "%(node, str(node.neighbours)) ) 
     if len(graph.nodes) == 0 :
         log("there are not any node")
             
@@ -63,13 +63,14 @@ g.readFiles()
 
 log_neighbours(g)
 #g.draw()
-
-g.grow( 10, 20, 10 )
+g.traceGrowth = False
+g.grow( 10, 10, 10 )
 g.draw(10)
-array = g.startElection(n6)
+node = random.choice(g.nodes.values())
+array = g.startElection(node)
 
 #print array
-#if len(n2.neighbors) == 4 and len(n3.neighbors) == 2 and len(n4.neighbors) == 2 :
+#if len(n2.neighbours) == 4 and len(n3.neighbours) == 2 and len(n4.neighbours) == 2 :
 #    log("completed successfully..")
 #else:
 #    log("There is something wrong..")

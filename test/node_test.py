@@ -15,7 +15,7 @@ def log(message):
     print("TEST:: %s"%(message))
 
 def log_neighbours(node):
-    log("%s neighbors : %s "%(node, str(node.neighbors)) ) 
+    log("%s neighbours : %s "%(node, str(node.neighbours)) ) 
 
 n1=Node(1,1)
 n2=Node(2,2)
@@ -24,14 +24,14 @@ n4=Node(4,4)
 n5=Node(5,5)
 n6=Node(6,6)
 
-n1.addNeighbor(n2)
-n1.addNeighbor(n3)
-n1.addNeighbor(n3) 
-n1.addNeighbor(n5)
-n1.addNeighbor(n6)
+n1.addNeighbour(n2)
+n1.addNeighbour(n3)
+n1.addNeighbour(n3) 
+n1.addNeighbour(n5)
+n1.addNeighbour(n6)
 
-n3.addNeighbor(n2)
-n4.addNeighbor(n2)
+n3.addNeighbour(n2)
+n4.addNeighbour(n2)
 
 log_neighbours(n1) 
 log_neighbours(n2) 
@@ -47,7 +47,7 @@ log_neighbours(n4)
 log_neighbours(n5) 
 log_neighbours(n6) 
 
-if len(n1.neighbors) == 0 and len(n3.neighbors) == 1 and len(n4.neighbors) == 1 :
+if len(n1.neighbours) == 0 and len(n3.neighbours) == 1 and len(n4.neighbours) == 1 :
     log("completed successfully..")
 else:
     log("There is something wrong..")
