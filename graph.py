@@ -100,25 +100,29 @@ class Graph(object):
         self.traceGrowthVisual=False
         self.traceElectionVisual=True
         self.MAX_CAPACITY=400
+        self.GROWTH_LIMIT = 100
+        self.GROWTH_RATE = 10
         self.number = 0
         self.log("Graph initialized..")  
            
     """ 
     Graph grow method
     Args:
-        GOWTH_RATE: remove percantage for grow
+        GROWTH_RATE: remove percantage for grow
         GROWTH_LIMIT: max limit for node numbers in graph
         MAX_CAPACITY: Nodes max capacity 
     Return: 
         None 
     """   
-    def grow(self, GOWTH_RATE=10, GROWTH_LIMIT=1000, MAX_CAPACITY=400 ):
+    def grow(self, GROWTH_RATE=10, GROWTH_LIMIT=1000, MAX_CAPACITY=400 ):
         self.MAX_CAPACITY = MAX_CAPACITY
+        self.GROWTH_LIMIT = GROWTH_LIMIT
+        self.GROWTH_RATE = GROWTH_RATE
         length = len(self.nodes)
         figure = 1
         while length < GROWTH_LIMIT:
             number = random.randint(1,100)
-            if number > GOWTH_RATE:
+            if number > GROWTH_RATE:
                 #add new node
                 while self.nodes.has_key(self.lastID):
                     self.lastID += 1
@@ -345,6 +349,10 @@ class Graph(object):
         else:
             return False     
     
+    def removeVisitedProperty(self):
+        for node in self.nodes.values():
+            node.VISITED = False
+
     """ 
     Start election algorithm on graph
     Args: 
@@ -353,6 +361,7 @@ class Graph(object):
         None
     """
     def startElection(self,start):
+        self.removeVisitedProperty()
         self.log_election("BEGIN election =============================")
         self.log_election("start node : "+ str(start))
         self.log_election("END election =============================")
@@ -383,7 +392,7 @@ class Graph(object):
         
         coordinator = random.choice(coordinator_candidates)
         if self.traceElectionVisual:
-            self.draw()
+            #self.draw()
             self.draw_node(coordinator, coordinator_candidates)
         self.log_election("====================================")
         self.log_election("Election result : " + str(coordinator_candidates) )
@@ -505,6 +514,7 @@ class Graph(object):
         None
     """
     def draw(self ):
+        self.log("graph is drawing..")
         colors = ["#EFDFBB","orange","lightgreen","lightblue","#FFD300","violet","yellow","#7CB9E8","#E1A95F", "#007FFF","#CCFF00","pink","cyan"]
         length = len(colors) - 1
         # division by zero
@@ -564,6 +574,7 @@ class Graph(object):
         None
     """
     def draw_node(self, coordinator, coordinator_candidates):
+        self.log("coordinator is drawing..")
         coordinator_colors = ["orange", "yellow", "skyblue"]  
         def find_coordinator_color(node):
             if node.ID == coordinator.ID:
