@@ -34,7 +34,7 @@ class Ui_MainWindow():
         
     def setupUi(self, MainWindow): 
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(400, 400)
+        MainWindow.resize(500, 500)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         MainWindow.setWindowTitle(_translate("MainWindow", "Election algorithm on graph - Ismail AKBUDAK", None))
@@ -45,7 +45,7 @@ class Ui_MainWindow():
 
         # Tabs initialized
         self.tabWidget = QtGui.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 400, 400))
+        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 2000, 2000))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))        
         # Tab main initialized
         self.tabMain = QtGui.QWidget()
@@ -70,22 +70,23 @@ class Ui_MainWindow():
         self.pushButtonDraw.setText(_translate("MainWindow", "Draw Graph", None))
         self.pushButtonDraw.clicked.connect(self.draw)
 
-        # Main - Close figure  button
-        self.pushButtonClose = QtGui.QPushButton(self.tabMain)
-        self.pushButtonClose.setGeometry(QtCore.QRect(85, 130, 200, 30)) 
-        self.pushButtonClose.setObjectName(_fromUtf8("pushButtonClose"))
-        self.pushButtonClose.setText(_translate("MainWindow", "Close Figures", None))
-        self.pushButtonClose.clicked.connect(self.closeFigures)
+        # # Main - Close figure  button
+        # self.pushButtonClose = QtGui.QPushButton(self.tabMain)
+        # self.pushButtonClose.setGeometry(QtCore.QRect(85, 130, 200, 30)) 
+        # self.pushButtonClose.setObjectName(_fromUtf8("pushButtonClose"))
+        # self.pushButtonClose.setText(_translate("MainWindow", "Close Figures", None))
+        # self.pushButtonClose.clicked.connect(self.closeFigures)
 
-        # Main - Close figure  button
-        self.pushButtonClose = QtGui.QPushButton(self.tabMain)
-        self.pushButtonClose.setGeometry(QtCore.QRect(85, 170, 200, 30)) 
-        self.pushButtonClose.setObjectName(_fromUtf8("pushButtonClose"))
-        self.pushButtonClose.setText(_translate("MainWindow", "Close Last Figure", None))
-        self.pushButtonClose.clicked.connect(self.closeFigure)
+        # # Main - Close figure  button
+        # self.pushButtonClose = QtGui.QPushButton(self.tabMain)
+        # self.pushButtonClose.setGeometry(QtCore.QRect(85, 210, 200, 30)) 
+        # self.pushButtonClose.setObjectName(_fromUtf8("pushButtonClose"))
+        # self.pushButtonClose.setText(_translate("MainWindow", "Close Last Figure", None))
+        # self.pushButtonClose.clicked.connect(self.closeFigure)
+        
         # Main - Close figure  button
         self.pushButtonClearGraph = QtGui.QPushButton(self.tabMain)
-        self.pushButtonClearGraph.setGeometry(QtCore.QRect(85, 210, 200, 30)) 
+        self.pushButtonClearGraph.setGeometry(QtCore.QRect(85, 170, 200, 30)) 
         self.pushButtonClearGraph.setObjectName(_fromUtf8("pushButtonClearGraph"))
         self.pushButtonClearGraph.setText(_translate("MainWindow", "Clear Graph", None))
         self.pushButtonClearGraph.clicked.connect(self.clearGraph)

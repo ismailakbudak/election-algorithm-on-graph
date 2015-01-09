@@ -386,18 +386,8 @@ class Graph(object):
         coordinator_candidates = self.findMaxArray(visited, start, [start])
         
         coordinator = self.findMax(visited, start, start)
-        self.log_election("====================================")
-        self.log_election("One coordinator result: " + str(coordinator) )
-        self.log_election("====================================")
         
         coordinator = random.choice(coordinator_candidates)
-        if self.traceElectionVisual:
-            #self.draw()
-            self.draw_node(coordinator, coordinator_candidates)
-        self.log_election("====================================")
-        self.log_election("Election result : " + str(coordinator_candidates) )
-        self.log_election("====================================")
-        self.log_election("Coordinator : " + str(coordinator) )
         self.log_election("====================================")
         self.log_election("First status for nodes coordinator")
         self.log_election("====================================")
@@ -407,7 +397,17 @@ class Graph(object):
         self.log_election("After inform coordinator to nodes ")
         self.log_election("====================================")
         self.print_coordinator()   
-    
+        #self.log_election("====================================")
+        #self.log_election("One coordinator result: " + str(coordinator) )
+        self.log_election("====================================")
+        self.log_election("Election result : " + str(coordinator_candidates) )
+        self.log_election("====================================")
+        self.log_election("Coordinator : " + str(coordinator) )
+        self.log_election("====================================")
+        if self.traceElectionVisual:
+            #self.draw()
+            self.draw_node(coordinator, coordinator_candidates, start)
+        
     """ 
     Print nodes coordinator
     Args:
@@ -539,7 +539,7 @@ class Graph(object):
         else:
             edges=[]
             edge_colors="yellow"    
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(15, 10))
         nx.draw(graph,
                 with_labels=True,
                 font_size=7,
@@ -562,7 +562,8 @@ class Graph(object):
             if flag:
                 break
             y-=0.033; i+=1
-        plt.show(block=False) 
+        plt.show() 
+        #plt.show(block=False) 
 
 
     """ 
@@ -573,15 +574,17 @@ class Graph(object):
     Return: 
         None
     """
-    def draw_node(self, coordinator, coordinator_candidates):
+    def draw_node(self, coordinator, coordinator_candidates, start):
         self.log("coordinator is drawing..")
-        coordinator_colors = ["orange", "yellow", "skyblue"]  
+        coordinator_colors = ["orange", "yellow", "pink", "skyblue"]  
         def find_coordinator_color(node):
             if node.ID == coordinator.ID:
                 return coordinator_colors[0]
             if node in coordinator_candidates:
                 return coordinator_colors[1]
-            return coordinator_colors[2] 
+            if node.ID == start.ID:
+                return coordinator_colors[2]
+            return coordinator_colors[3] 
 
         graph = nx.DiGraph()
         for node in self.nodes.values():
@@ -592,7 +595,7 @@ class Graph(object):
                                 coordinator_color=find_coordinator_color(node_neighbour) )
         node_coordinator_colors = map(find_coordinator_color, graph.nodes()) 
         coordinator_edges,coordinator_edge_colors = zip(*nx.get_edge_attributes(graph,'coordinator_color').items()) 
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(15, 10))
         nx.draw(graph,
                 with_labels=True,
                 font_size=7,
@@ -610,11 +613,14 @@ class Graph(object):
                 text = "Coordinator"
             elif color == coordinator_colors[1]: 
                 text = "Coordinator candidate"
+            elif color == coordinator_colors[2]: 
+                text = "Start point"
             else:  
                 text = "Normal nodes" 
             plt.text(-0.18, y, text, bbox=dict(facecolor=color, alpha=0.5))
             y-=0.033 
-        plt.show(block=False) 
+        plt.show() 
+        #plt.show(block=False) 
 
     """ 
     Read nodes and edges from file 
