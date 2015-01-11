@@ -56,9 +56,11 @@ g.link(n1,n6)
 
 log_neighbours(g)  
 
-log_neighbours(g) 
+log_neighbours(g)
 
-if len(n2.neighbours) == 4 and len(n3.neighbours) == 2 and len(n4.neighbours) == 2 :
+g.readFiles() 
+
+if len(n2.neighbours) == 4 and len(n4.neighbours) == 2 :
     log("completed successfully..")
 else:
     log("There is something wrong..")

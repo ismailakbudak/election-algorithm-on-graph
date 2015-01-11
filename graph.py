@@ -149,7 +149,7 @@ class Graph(object):
             if self.traceGrowthVisual and length > 1:
                 self.log_grow("figure : %s"%figure)
                 figure += 1        
-                self.draw()
+                self.draw(block=False)
         self.log_grow("total nodes length : %s"%str(len(self.nodes))  )
     
     """ 
@@ -513,7 +513,7 @@ class Graph(object):
     Return: 
         None
     """
-    def draw(self ):
+    def draw(self, block=True ):
         self.log("graph is drawing..")
         colors = ["#EFDFBB","orange","lightgreen","violet","yellow","#7CB9E8","#E1A95F", "#007FFF","pink","cyan"]
         length = len(colors) - 1
@@ -566,8 +566,8 @@ class Graph(object):
             if flag:
                 break
             y-=0.033; i+=1
-        plt.show() 
-        #plt.show(block=False) 
+        #plt.show()  
+        plt.show(block=block) 
 
 
     """ 
