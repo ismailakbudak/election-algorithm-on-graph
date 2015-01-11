@@ -98,9 +98,9 @@ class Graph(object):
         self.traceElection=True
         self.traceLog=True
         self.traceGrowthVisual=False
-        self.traceElectionVisual=True
-        self.MAX_CAPACITY=400
-        self.GROWTH_LIMIT = 100
+        self.traceVisual=True
+        self.MAX_CAPACITY=100
+        self.GROWTH_LIMIT = 50
         self.GROWTH_RATE = 10
         self.number = 0
         self.log("Graph initialized..")  
@@ -404,7 +404,7 @@ class Graph(object):
         self.log_election("====================================")
         self.log_election("Coordinator : " + str(coordinator) )
         self.log_election("====================================")
-        if self.traceElectionVisual:
+        if self.traceVisual:
             #self.draw()
             self.draw_node(coordinator, coordinator_candidates, start)
         
@@ -515,7 +515,7 @@ class Graph(object):
     """
     def draw(self ):
         self.log("graph is drawing..")
-        colors = ["#EFDFBB","orange","lightgreen","lightblue","#FFD300","violet","yellow","#7CB9E8","#E1A95F", "#007FFF","#CCFF00","pink","cyan"]
+        colors = ["#EFDFBB","orange","lightgreen","violet","yellow","#7CB9E8","#E1A95F", "#007FFF","pink","cyan"]
         length = len(colors) - 1
         # division by zero
         if length >= self.MAX_CAPACITY:
@@ -528,11 +528,14 @@ class Graph(object):
             return colors[index]
 
         graph = nx.DiGraph()
-        for node in self.nodes.values():
+        node_size=[]
+        nodelist=self.nodes.values()
+        for node in nodelist:
             graph.add_node(node)
+            node_size.append( node.CAPACITY * 60 ) 
             for node_neighbour in node.neighbours.values():
                 graph.add_edge(node, node_neighbour, color=find_color(node_neighbour) )
-        node_colors = map(find_color, graph.nodes())
+        node_colors = map(find_color, nodelist)
 
         if len(self.nodes) > 1:
             edges,edge_colors = zip(*nx.get_edge_attributes(graph,'color').items()) 
@@ -542,8 +545,9 @@ class Graph(object):
         plt.figure(figsize=(15, 10))
         nx.draw(graph,
                 with_labels=True,
-                font_size=7,
-                node_size=1300,
+                font_size=8,
+                nodelist=nodelist,
+                node_size=node_size,
                 font_family='ubuntu',
                 font_color='red',
                 node_color=node_colors, 
@@ -587,19 +591,23 @@ class Graph(object):
             return coordinator_colors[3] 
 
         graph = nx.DiGraph()
-        for node in self.nodes.values():
+        node_size=[]
+        nodelist=self.nodes.values()
+        for node in nodelist:
             graph.add_node(node)
+            node_size.append( node.CAPACITY * 60 ) 
             for node_neighbour in node.neighbours.values():
                 graph.add_edge( node, 
                                 node_neighbour,  
                                 coordinator_color=find_coordinator_color(node_neighbour) )
-        node_coordinator_colors = map(find_coordinator_color, graph.nodes()) 
+        node_coordinator_colors = map(find_coordinator_color, nodelist) 
         coordinator_edges,coordinator_edge_colors = zip(*nx.get_edge_attributes(graph,'coordinator_color').items()) 
         plt.figure(figsize=(15, 10))
         nx.draw(graph,
                 with_labels=True,
-                font_size=7,
-                node_size=1300,
+                font_size=8, 
+                nodelist=nodelist,
+                node_size=node_size,
                 font_family='ubuntu',
                 font_color='red',
                 node_color=node_coordinator_colors, 
