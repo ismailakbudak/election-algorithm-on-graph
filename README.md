@@ -8,7 +8,8 @@ election algorithm on graph
 
 ```sudo apt-get install python-matplotlib```
  
-
+Run  
+``` python gui.py```
 
 
  
